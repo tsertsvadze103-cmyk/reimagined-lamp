@@ -1,748 +1,326 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ka">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeVault - გააზიარე შენი კოდის ფრაგმენტები</title>
-    <!-- Material Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style type="text/tailwindcss">
-        /* Google Fonts - Inter for UI, Fira Code for code */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeVault - გააზიარე შენი კოდი მარტივად</title>
 
-        @layer base {
-            body {
-                font-family: 'Inter', sans-serif;
-                @apply bg-gray-50 text-gray-800;
-            }
-            /* Custom scrollbar for code areas */
-            textarea::-webkit-scrollbar, .code-display::-webkit-scrollbar {
-                width: 8px;
-                height: 8px;
-            }
-            textarea::-webkit-scrollbar-track, .code-display::-webkit-scrollbar-track {
-                @apply bg-gray-700 rounded-full;
-            }
-            textarea::-webkit-scrollbar-thumb, .code-display::-webkit-scrollbar-thumb {
-                @apply bg-gray-500 rounded-full;
-            }
-            textarea::-webkit-scrollbar-thumb:hover, .code-display::-webkit-scrollbar-thumb:hover {
-                @apply bg-gray-400;
-            }
-            .code-display {
-                @apply bg-gray-900 text-green-300 p-4 rounded-lg overflow-auto text-sm md:text-base;
-                font-family: 'Fira Code', monospace; /* Ensure Fira Code is used */
-                max-height: 70vh; /* Limit height for readability */
-                white-space: pre-wrap; /* Preserve whitespace and wrap long lines */
-                word-break: break-all; /* Break words to prevent overflow */
-            }
-            /* General button styling for consistency and psychological impact */
-            .btn {
-                @apply flex items-center justify-center px-4 py-2 rounded-full font-semibold shadow transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2;
-            }
-            .btn-primary {
-                @apply bg-indigo-600 hover:bg-indigo-700 text-white focus:ring-indigo-500;
-            }
-            .btn-secondary {
-                @apply bg-blue-500 hover:bg-blue-600 text-white focus:ring-blue-500;
-            }
-            .btn-success {
-                @apply bg-green-500 hover:bg-green-600 text-white focus:ring-green-500;
-            }
-            .btn-danger {
-                @apply bg-red-500 hover:bg-red-600 text-white focus:ring-red-500;
-            }
-            .btn-warning {
-                @apply bg-yellow-500 hover:bg-yellow-600 text-white focus:ring-yellow-500;
-            }
-            .btn-ghost {
-                @apply bg-white text-blue-700 hover:bg-gray-100 focus:ring-gray-300;
-            }
-        }
-    </style>
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 </head>
-<body class="min-h-screen flex flex-col">
-    <!-- Header -->
-    <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-lg p-4">
-        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
-            <a href="/#" class="text-2xl font-bold tracking-tight flex items-center mb-4 md:mb-0">
-                <span class="material-icons text-3xl mr-2">code</span>
-                CodeVault
-            </a>
-            <nav class="flex items-center space-x-2 sm:space-x-4">
-                <button id="dashboard-btn" class="hidden btn btn-ghost text-blue-700">
-                    <span class="material-icons mr-1 text-base">dashboard</span>
-                    ჩემი სკრიპტები
-                </button>
-                <button id="login-btn" class="btn btn-secondary">
-                    <span class="material-icons mr-1 text-base">login</span>
-                    შესვლა
-                </button>
-                <button id="register-btn" class="btn btn-success">
-                    <span class="material-icons mr-1 text-base">person_add</span>
-                    რეგისტრაცია
-                </button>
-                <button id="logout-btn" class="hidden btn btn-danger">
-                    <span class="material-icons mr-1 text-base">logout</span>
-                    გასვლა
-                </button>
-            </nav>
-        </div>
-    </header>
+<body class="bg-gray-50 text-gray-800 font-[Inter]">
 
-    <!-- Main Content Area -->
-    <main id="app-content" class="flex-grow container mx-auto p-4 md:p-8">
-        <!-- Content will be dynamically loaded here by JavaScript -->
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white p-4 text-center text-sm">
-        <div class="container mx-auto">
-            &copy; 2023 CodeVault. ყველა უფლება დაცულია.
-        </div>
-    </footer>
-
-    <!-- Auth Modal (Login/Register) -->
-    <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-lg shadow-xl p-6 md:p-8 w-full max-w-md relative">
-            <button id="close-auth-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-full">
-                <span class="material-icons">close</span>
-                <span class="sr-only">დახურვა</span>
-            </button>
-            <h2 id="auth-modal-title" class="text-3xl font-bold text-gray-900 mb-6 text-center">შესვლა</h2>
-            <form id="auth-form" class="space-y-4">
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">ელფოსტა</label>
-                    <input type="email" id="email" name="email" required autocomplete="username" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition duration-200">
-                </div>
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">პაროლი</label>
-                    <input type="password" id="password" name="password" required autocomplete="current-password" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition duration-200">
-                </div>
-                <p id="auth-error" class="text-red-600 text-sm text-center hidden" role="alert"></p>
-                <button type="submit" id="auth-submit-btn" class="w-full btn btn-primary py-2 px-4 rounded-md">
-                    <span class="material-icons mr-2 text-base">login</span>
-                    შესვლა
-                </button>
-                <div class="text-center mt-4">
-                    <button type="button" id="toggle-auth-mode" class="text-sm text-indigo-600 hover:underline focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md">არ გაქვთ ანგარიში? <span class="font-semibold">დარეგისტრირდით</span></button>
-                </div>
-            </form>
-        </div>
+  <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 shadow-lg">
+    <div class="container mx-auto flex justify-between items-center">
+      <a href="#" class="text-2xl font-bold flex items-center">
+        <span class="material-icons mr-2">code</span> CodeVault
+      </a>
+      <nav class="flex gap-2">
+        <button id="dashboard-btn" class="hidden bg-white text-blue-700 px-3 py-1 rounded-full">დაფა</button>
+        <button id="login-btn" class="bg-blue-500 px-3 py-1 rounded-full">შესვლა</button>
+        <button id="register-btn" class="bg-green-500 px-3 py-1 rounded-full">რეგისტრაცია</button>
+        <button id="logout-btn" class="hidden bg-red-500 px-3 py-1 rounded-full">გასვლა</button>
+      </nav>
     </div>
+  </header>
 
-    <!-- Script Form Modal (Create/Edit) -->
-    <div id="script-form-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-lg shadow-xl p-6 md:p-8 w-full max-w-3xl relative">
-            <button id="close-script-form-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-full">
-                <span class="material-icons">close</span>
-                <span class="sr-only">დახურვა</span>
-            </button>
-            <h2 id="script-form-title" class="text-3xl font-bold text-gray-900 mb-6 text-center">ახალი სკრიპტის შექმნა</h2>
-            <form id="script-form" class="space-y-4">
-                <div>
-                    <label for="script-title" class="block text-sm font-medium text-gray-700 mb-1">სკრიპტის სათაური</label>
-                    <input type="text" id="script-title" name="title" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition duration-200" placeholder="მაგ. 'მარტივი ტაბების კომპონენტი'">
-                </div>
-                <div>
-                    <label for="script-content" class="block text-sm font-medium text-gray-700 mb-1">კოდი (HTML/JavaScript)</label>
-                    <textarea id="script-content" name="content" required rows="15" class="w-full px-4 py-2 border border-gray-300 rounded-md font-mono text-sm bg-gray-800 text-green-300 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200" placeholder='<div id="my-app"></div><script>document.getElementById("my-app").innerHTML = "Hello CodeVault!";</script>'></textarea>
-                </div>
-                <p id="script-form-error" class="text-red-600 text-sm text-center hidden" role="alert"></p>
-                <button type="submit" id="save-script-btn" class="w-full btn btn-secondary py-2 px-4 rounded-md">
-                    <span class="material-icons mr-2 text-base">save</span>
-                    სკრიპტის შენახვა
-                </button>
-            </form>
-        </div>
+  <main id="app-content" class="container mx-auto p-6"></main>
+
+  <footer class="bg-gray-800 text-white text-center text-sm py-3">&copy; 2025 CodeVault</footer>
+
+  <!-- Auth Modal -->
+  <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md relative">
+      <button id="close-auth-modal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+        <span class="material-icons">close</span>
+      </button>
+      <h2 id="auth-modal-title" class="text-2xl font-bold text-center mb-4">შესვლა</h2>
+      <form id="auth-form" class="space-y-3">
+        <input type="email" id="email" placeholder="ელფოსტა" required class="w-full border p-2 rounded">
+        <input type="password" id="password" placeholder="პაროლი" required class="w-full border p-2 rounded">
+        <p id="auth-error" class="text-red-600 text-center hidden"></p>
+        <button type="submit" id="auth-submit-btn" class="bg-indigo-600 w-full text-white py-2 rounded">შესვლა</button>
+        <p class="text-center text-sm">
+          <button type="button" id="toggle-auth-mode" class="text-indigo-600 hover:underline">არ გაქვთ ანგარიში? დარეგისტრირდით</button>
+        </p>
+      </form>
     </div>
+  </div>
 
-    <script type="module">
-    
+  <!-- Script Modal -->
+  <div id="script-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-2xl relative">
+      <button id="close-script-modal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+        <span class="material-icons">close</span>
+      </button>
+      <h2 id="script-modal-title" class="text-2xl font-bold mb-4 text-center">ახალი სკრიპტი</h2>
+      <form id="script-form" class="space-y-3">
+        <input type="text" id="script-title" placeholder="სკრიპტის სათაური" required class="w-full border p-2 rounded">
+        <textarea id="script-content" rows="10" placeholder="<div>მარტივი სკრიპტი</div>" required class="w-full border p-2 rounded font-mono bg-gray-900 text-green-300"></textarea>
+        <p id="script-error" class="text-red-600 text-center hidden"></p>
+        <button type="submit" class="bg-blue-600 text-white py-2 rounded w-full">შენახვა</button>
+      </form>
+    </div>
+  </div>
 
-        // --- Firebase Configuration & Initialization ---
-        // IMPORTANT: Replace these placeholders with your actual Firebase project configuration.
-        const firebaseConfig = {
-          apiKey: "AIzaSyAB2FnGzm-vRFzjzMFc5fSqIx4JFhtSZHg",
-          authDomain: "hostsite-87e89.firebaseapp.com",
-          projectId: "hostsite-87e89",
-          storageBucket: "hostsite-87e89.firebasestorage.app",
-          messagingSenderId: "594577784773",
-          appId: "1:594577784773:web:16b148cc0bc00999ebd5ac"
-        };
+  <script type="module">
+    const firebaseConfig = {
+      apiKey: "AIzaSyAB2FnGzm-vRFzjzMFc5fSqIx4JFhtSZHg",
+      authDomain: "hostsite-87e89.firebaseapp.com",
+      projectId: "hostsite-87e89",
+      storageBucket: "hostsite-87e89.firebasestorage.app",
+      messagingSenderId: "594577784773",
+      appId: "1:594577784773:web:16b148cc0bc00999ebd5ac"
+    };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const FieldValue = firebase.firestore.FieldValue; // Import FieldValue for server timestamps
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const APP_ARTIFACT_ID = "CodeVault_App";
 
-        const FIRESTORE_APP_ID = firebaseConfig.appId; // Use a dedicated variable for the app ID in Firestore path
+    const appContent = document.getElementById('app-content');
+    const loginBtn = document.getElementById('login-btn');
+    const registerBtn = document.getElementById('register-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const dashboardBtn = document.getElementById('dashboard-btn');
 
-        // --- Global State Variables ---
-        let currentUser = null;
-        let editingScriptId = null; // Stores the ID of the script being edited
-        let currentAuthMode = 'login'; // 'login' or 'register'
+    const authModal = document.getElementById('auth-modal');
+    const closeAuthModal = document.getElementById('close-auth-modal');
+    const authForm = document.getElementById('auth-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const authError = document.getElementById('auth-error');
+    const authModalTitle = document.getElementById('auth-modal-title');
+    const toggleAuthModeBtn = document.getElementById('toggle-auth-mode');
+    const authSubmitBtn = document.getElementById('auth-submit-btn');
 
-        // --- DOM Elements ---
-        const appContent = document.getElementById('app-content');
-        const dashboardBtn = document.getElementById('dashboard-btn');
-        const loginBtn = document.getElementById('login-btn');
-        const registerBtn = document.getElementById('register-btn');
-        const logoutBtn = document.getElementById('logout-btn');
+    const scriptModal = document.getElementById('script-modal');
+    const closeScriptModal = document.getElementById('close-script-modal');
+    const scriptForm = document.getElementById('script-form');
+    const scriptTitle = document.getElementById('script-title');
+    const scriptContent = document.getElementById('script-content');
+    const scriptError = document.getElementById('script-error');
 
-        // Auth Modal Elements
-        const authModal = document.getElementById('auth-modal');
-        const closeAuthModal = document.getElementById('close-auth-modal');
-        const authModalTitle = document.getElementById('auth-modal-title');
-        const authForm = document.getElementById('auth-form');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const authSubmitBtn = document.getElementById('auth-submit-btn');
-        const authError = document.getElementById('auth-error');
-        const toggleAuthModeBtn = document.getElementById('toggle-auth-mode');
+    let currentUser = null;
+    let currentAuthMode = 'login';
+    let editingScriptId = null;
 
-        // Script Form Modal Elements
-        const scriptFormModal = document.getElementById('script-form-modal');
-        const closeScriptFormModal = document.getElementById('close-script-form-modal');
-        const scriptFormTitle = document.getElementById('script-form-title');
-        const scriptForm = document.getElementById('script-form');
-        const scriptTitleInput = document.getElementById('script-title');
-        const scriptContentInput = document.getElementById('script-content');
-        const scriptFormError = document.getElementById('script-form-error');
-        const saveScriptBtn = document.getElementById('save-script-btn');
+    auth.onAuthStateChanged((user) => {
+      currentUser = user;
+      updateNav();
+      handleRoute();
+    });
 
-        // --- Utility Functions ---
-        function showModal(modal) {
-            modal.classList.remove('hidden');
-            // Prevent scrolling on the body when modal is open for better UX
-            document.body.classList.add('overflow-hidden');
+    function updateNav() {
+      if (currentUser) {
+        loginBtn.classList.add('hidden');
+        registerBtn.classList.add('hidden');
+        logoutBtn.classList.remove('hidden');
+        dashboardBtn.classList.remove('hidden');
+      } else {
+        loginBtn.classList.remove('hidden');
+        registerBtn.classList.remove('hidden');
+        logoutBtn.classList.add('hidden');
+        dashboardBtn.classList.add('hidden');
+      }
+    }
+
+    function showModal(modal) {
+      modal.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    }
+    function hideModal(modal) {
+      modal.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    // ---------- ROUTER ----------
+    window.addEventListener('hashchange', handleRoute);
+    function handleRoute() {
+      const hash = window.location.hash;
+      if (hash.startsWith('#/script/')) {
+        renderPublicScript(hash.split('/script/')[1]);
+      } else if (hash === '#/dashboard') {
+        currentUser ? renderDashboard() : showModal(authModal);
+      } else {
+        renderHome();
+      }
+    }
+
+    function renderHome() {
+      appContent.innerHTML = `
+        <section class="text-center py-16">
+          <h1 class="text-4xl font-extrabold mb-4">გააზიარე შენი კოდი მარტივად</h1>
+          <p class="text-gray-600 mb-6">შეინახე, გაუზიარე და გაუშვი შენი HTML/JS სკრიპტები სწრაფად.</p>
+          <button id="get-started" class="bg-indigo-600 text-white px-6 py-2 rounded-full">დაიწყე ახლავე</button>
+        </section>
+      `;
+      document.getElementById('get-started').onclick = () => {
+        currentUser ? window.location.hash = '#/dashboard' : showModal(authModal);
+      };
+    }
+
+    async function renderDashboard() {
+      appContent.innerHTML = `
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-3xl font-bold">ჩემი სკრიპტები</h2>
+          <button id="new-script" class="bg-indigo-600 text-white px-4 py-2 rounded-full">ახალი სკრიპტი</button>
+        </div>
+        <div id="scripts" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      `;
+
+      document.getElementById('new-script').onclick = () => {
+        editingScriptId = null;
+        scriptForm.reset();
+        showModal(scriptModal);
+      };
+
+      const scriptsContainer = document.getElementById('scripts');
+      const scriptsRef = db.collection('artifacts').doc(APP_ARTIFACT_ID)
+        .collection('users').doc(currentUser.uid)
+        .collection('scripts');
+
+      const snapshot = await scriptsRef.orderBy('createdAt', 'desc').get();
+      scriptsContainer.innerHTML = snapshot.empty
+        ? `<p class="text-gray-500 col-span-full text-center">ჯერ არ გაქვთ სკრიპტები.</p>`
+        : snapshot.docs.map(doc => {
+          const d = doc.data();
+          return `
+            <div class="bg-white p-4 rounded-lg shadow">
+              <h3 class="text-xl font-semibold">${d.title}</h3>
+              <div class="text-sm text-gray-500">${new Date(d.createdAt).toLocaleDateString('ka-GE')}</div>
+              <div class="flex gap-2 mt-3">
+                <button onclick="window.location.hash='#/script/${d.publicId}'" class="bg-blue-500 text-white px-2 py-1 rounded">ნახვა</button>
+                <button onclick="editScript('${doc.id}')" class="bg-yellow-500 text-white px-2 py-1 rounded">რედაქტირება</button>
+                <button onclick="deleteScript('${doc.id}')" class="bg-red-500 text-white px-2 py-1 rounded">წაშლა</button>
+              </div>
+            </div>`;
+        }).join('');
+    }
+
+    async function renderPublicScript(id) {
+      appContent.innerHTML = `<p class="text-center text-gray-600 py-8">იტვირთება...</p>`;
+      try {
+        const q = await db.collectionGroup('scripts').where('publicId', '==', id).get();
+        if (q.empty) {
+          appContent.innerHTML = `<p class="text-center text-red-600 py-8">სკრიპტი ვერ მოიძებნა ან წაშლილია.</p>`;
+          return;
         }
+        const d = q.docs[0].data();
+        appContent.innerHTML = `
+          <div class="max-w-4xl mx-auto py-6">
+            <h2 class="text-3xl font-bold mb-2">${d.title}</h2>
+            <p class="text-sm text-gray-500 mb-4">${d.ownerEmail} • ${new Date(d.createdAt).toLocaleDateString('ka-GE')}</p>
+            <pre class="bg-gray-900 text-green-300 p-4 rounded overflow-auto font-mono">${d.content.replace(/[<>&]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))}</pre>
+            <h3 class="text-xl font-semibold mt-6 mb-2">შესრულების შედეგი:</h3>
+            <iframe class="w-full h-80 border rounded" sandbox="allow-scripts allow-same-origin"></iframe>
+          </div>`;
+        const iframe = appContent.querySelector('iframe');
+        iframe.contentDocument.open();
+        iframe.contentDocument.write(d.content);
+        iframe.contentDocument.close();
+      } catch (e) {
+        appContent.innerHTML = `<p class="text-red-600 text-center">${e.message}</p>`;
+      }
+    }
 
-        function hideModal(modal) {
-            modal.classList.add('hidden');
-            // Reset form errors and clear form fields
-            if (modal === authModal) {
-                authError.classList.add('hidden');
-                authForm.reset();
-            }
-            if (modal === scriptFormModal) {
-                scriptFormError.classList.add('hidden');
-                scriptForm.reset();
-            }
-            // Re-enable body scrolling
-            document.body.classList.remove('overflow-hidden');
-        }
+    async function editScript(id) {
+      const ref = db.collection('artifacts').doc(APP_ARTIFACT_ID)
+        .collection('users').doc(currentUser.uid)
+        .collection('scripts').doc(id);
+      const doc = await ref.get();
+      if (doc.exists) {
+        const d = doc.data();
+        editingScriptId = id;
+        scriptTitle.value = d.title;
+        scriptContent.value = d.content;
+        showModal(scriptModal);
+      }
+    }
 
-        function displayMessage(element, message, isError = true) {
-            element.textContent = message;
-            element.classList.remove('hidden');
-            element.classList.toggle('text-red-600', isError);
-            element.classList.toggle('text-green-600', !isError);
-            element.setAttribute('aria-live', 'polite'); // Announce messages to screen readers
-        }
+    async function deleteScript(id) {
+      if (!confirm("წავშალო ეს სკრიპტი?")) return;
+      await db.collection('artifacts').doc(APP_ARTIFACT_ID)
+        .collection('users').doc(currentUser.uid)
+        .collection('scripts').doc(id).delete();
+      alert('წაიშალა');
+      renderDashboard();
+    }
 
-        // --- Authentication Logic ---
-        auth.onAuthStateChanged((user) => {
-            currentUser = user;
-            updateUIForAuthStatus();
-            handleRouting(); // Re-render content based on auth status and hash
+    scriptForm.onsubmit = async (e) => {
+      e.preventDefault();
+      if (!currentUser) return;
+      const title = scriptTitle.value.trim();
+      const content = scriptContent.value.trim();
+      if (!title || !content) return alert('ყველა ველი აუცილებელია');
+
+      const ref = db.collection('artifacts').doc(APP_ARTIFACT_ID)
+        .collection('users').doc(currentUser.uid)
+        .collection('scripts');
+
+      if (editingScriptId) {
+        await ref.doc(editingScriptId).update({ title, content, updatedAt: new Date().toISOString() });
+      } else {
+        const newDoc = await ref.add({
+          title, content,
+          ownerId: currentUser.uid,
+          ownerEmail: currentUser.email,
+          createdAt: new Date().toISOString()
         });
+        await newDoc.update({ publicId: newDoc.id });
+      }
+      hideModal(scriptModal);
+      renderDashboard();
+    };
 
-        function updateUIForAuthStatus() {
-            if (currentUser) {
-                // User is signed in
-                loginBtn.classList.add('hidden');
-                registerBtn.classList.add('hidden');
-                dashboardBtn.classList.remove('hidden');
-                logoutBtn.classList.remove('hidden');
-            } else {
-                // User is signed out
-                loginBtn.classList.remove('hidden');
-                registerBtn.classList.remove('hidden');
-                dashboardBtn.classList.add('hidden');
-                logoutBtn.classList.add('hidden');
-            }
+    // --- Auth Modal Logic ---
+    loginBtn.onclick = () => { currentAuthMode = 'login'; updateAuthUI(); showModal(authModal); };
+    registerBtn.onclick = () => { currentAuthMode = 'register'; updateAuthUI(); showModal(authModal); };
+    closeAuthModal.onclick = () => hideModal(authModal);
+    closeScriptModal.onclick = () => hideModal(scriptModal);
+    logoutBtn.onclick = () => auth.signOut();
+
+    toggleAuthModeBtn.onclick = () => {
+      currentAuthMode = currentAuthMode === 'login' ? 'register' : 'login';
+      updateAuthUI();
+    };
+
+    function updateAuthUI() {
+      authError.classList.add('hidden');
+      if (currentAuthMode === 'login') {
+        authModalTitle.textContent = 'შესვლა';
+        authSubmitBtn.textContent = 'შესვლა';
+        toggleAuthModeBtn.textContent = 'არ გაქვთ ანგარიში? დარეგისტრირდით';
+      } else {
+        authModalTitle.textContent = 'რეგისტრაცია';
+        authSubmitBtn.textContent = 'რეგისტრაცია';
+        toggleAuthModeBtn.textContent = 'უკვე გაქვთ ანგარიში? შედით';
+      }
+    }
+
+    authForm.onsubmit = async (e) => {
+      e.preventDefault();
+      authError.classList.add('hidden');
+      try {
+        if (currentAuthMode === 'login') {
+          await auth.signInWithEmailAndPassword(emailInput.value, passwordInput.value);
+        } else {
+          await auth.createUserWithEmailAndPassword(emailInput.value, passwordInput.value);
         }
+        hideModal(authModal);
+      } catch (err) {
+        authError.textContent = err.message;
+        authError.classList.remove('hidden');
+      }
+    };
 
-        async function handleLogin(email, password) {
-            try {
-                authSubmitBtn.disabled = true; // Disable button to prevent multiple submissions
-                authSubmitBtn.innerHTML = `<span class="material-icons mr-2 text-base animate-spin">sync</span> შესვლა...`;
-                await auth.signInWithEmailAndPassword(email, password);
-                hideModal(authModal);
-                // No need to display success message on modal, as modal will close and UI will update
-            } catch (error) {
-                displayMessage(authError, `შესვლის შეცდომა: ${error.message}`);
-            } finally {
-                authSubmitBtn.disabled = false;
-                updateAuthModalUI(); // Restore button text
-            }
-        }
-
-        async function handleRegister(email, password) {
-            try {
-                authSubmitBtn.disabled = true; // Disable button
-                authSubmitBtn.innerHTML = `<span class="material-icons mr-2 text-base animate-spin">sync</span> რეგისტრაცია...`;
-                await auth.createUserWithEmailAndPassword(email, password);
-                hideModal(authModal);
-                // No need to display success message on modal, as modal will close and UI will update
-            } catch (error) {
-                displayMessage(authError, `რეგისტრაციის შეცდომა: ${error.message}`);
-            } finally {
-                authSubmitBtn.disabled = false;
-                updateAuthModalUI(); // Restore button text
-            }
-        }
-
-        async function handleLogout() {
-            try {
-                await auth.signOut();
-                // Redirect to home after logout
-                window.location.hash = '';
-            } catch (error) {
-                console.error("Logout Error:", error);
-                alert("შეცდომა გასვლისას: " + error.message);
-            }
-        }
-
-        // --- Routing Logic ---
-        function handleRouting() {
-            const hash = window.location.hash;
-            appContent.innerHTML = ''; // Clear existing content
-
-            if (hash.startsWith('#/script/')) {
-                const scriptId = hash.replace('#/script/', '');
-                renderPublicScript(scriptId);
-            } else if (hash === '#/dashboard') {
-                if (currentUser) {
-                    renderDashboard();
-                } else {
-                    // If not authenticated, redirect to home and prompt login
-                    window.location.hash = ''; // Go to home page
-                    showModal(authModal);
-                    currentAuthMode = 'login';
-                    updateAuthModalUI();
-                    displayMessage(authError, 'გთხოვთ, შეხვიდეთ თქვენი სკრიპტების სანახავად.', true);
-                }
-            } else {
-                renderHome();
-            }
-        }
-
-        function renderHome() {
-            appContent.innerHTML = `
-                <section class="text-center py-16 md:py-24">
-                    <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
-                        გააზიარე შენი კოდი, გაამარტივე თანამშრომლობა
-                    </h1>
-                    <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                        CodeVault გეხმარებათ სწრაფად შეინახოთ, მართოთ და გაუზიაროთ HTML/JavaScript კოდის ფრაგმენტები მსოფლიოს.
-                    </p>
-                    <button id="get-started-btn" class="btn btn-primary py-3 px-8 rounded-full text-lg">
-                        <span class="material-icons mr-2 text-xl">rocket_launch</span>
-                        დაიწყე ახლავე!
-                    </button>
-                </section>
-            `;
-            document.getElementById('get-started-btn').addEventListener('click', () => {
-                if (currentUser) {
-                    window.location.hash = '#/dashboard';
-                } else {
-                    showModal(authModal);
-                    currentAuthMode = 'register'; // Encourage registration
-                    updateAuthModalUI();
-                }
-            });
-        }
-
-        async function renderDashboard() {
-            if (!currentUser) {
-                window.location.hash = ''; // Redirect to home if not logged in
-                return;
-            }
-
-            appContent.innerHTML = `
-                <div class="max-w-4xl mx-auto py-8">
-                    <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-                        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 text-center sm:text-left">თქვენი სკრიპტები</h2>
-                        <button id="create-script-btn" class="btn btn-primary py-2 px-6 rounded-full">
-                            <span class="material-icons mr-2 text-base">add</span>
-                            ახალი სკრიპტი
-                        </button>
-                    </div>
-                    <div id="scripts-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <!-- Scripts will be loaded here -->
-                        <p class="text-center text-gray-500 col-span-full py-8">იტვირთება სკრიპტები...</p>
-                    </div>
-                    <p id="no-scripts-message" class="text-center text-gray-500 mt-8 hidden">ჯერ არ გაქვთ სკრიპტები. შექმენით პირველი!</p>
-                </div>
-            `;
-
-            document.getElementById('create-script-btn').addEventListener('click', () => {
-                editingScriptId = null; // Clear editing state
-                scriptForm.reset();
-                scriptFormTitle.textContent = 'ახალი სკრიპტის შექმნა';
-                saveScriptBtn.innerHTML = `<span class="material-icons mr-2 text-base">save</span> სკრიპტის შენახვა`;
-                showModal(scriptFormModal);
-            });
-
-            const scriptsList = document.getElementById('scripts-list');
-            const noScriptsMessage = document.getElementById('no-scripts-message');
-
-            try {
-                const scriptsRef = db.collection('artifacts').doc(FIRESTORE_APP_ID)
-                                    .collection('users').doc(currentUser.uid)
-                                    .collection('scripts');
-                const snapshot = await scriptsRef.orderBy('createdAt', 'desc').get();
-
-                scriptsList.innerHTML = ''; // Clear loading message
-
-                if (snapshot.empty) {
-                    noScriptsMessage.classList.remove('hidden');
-                } else {
-                    noScriptsMessage.classList.add('hidden'); // Hide if there are scripts
-                    snapshot.docs.forEach(doc => {
-                        const script = { id: doc.id, ...doc.data() };
-                        // Convert Firestore Timestamp to Date string for display
-                        const createdAtDate = script.createdAt && typeof script.createdAt.toDate === 'function'
-                                            ? script.createdAt.toDate().toLocaleDateString('ka-GE')
-                                            : 'უცნობი თარიღი';
-                        const scriptCard = `
-                            <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col justify-between">
-                                <div>
-                                    <h3 class="text-xl font-semibold text-gray-900 mb-2">${script.title}</h3>
-                                    <p class="text-sm text-gray-500 mb-4">
-                                        <span class="material-icons text-base align-middle mr-1">schedule</span>
-                                        შექმნილია: ${createdAtDate}
-                                    </p>
-                                </div>
-                                <div class="flex flex-wrap gap-2 mt-4">
-                                    <button data-id="${script.id}" class="view-script-btn btn bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
-                                        <span class="material-icons text-base mr-1">visibility</span> ნახვა
-                                    </button>
-                                    <button data-id="${script.id}" class="edit-script-btn btn bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-full text-sm">
-                                        <span class="material-icons text-base mr-1">edit</span> რედაქტირება
-                                    </button>
-                                    <button data-id="${script.id}" class="delete-script-btn btn bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-sm">
-                                        <span class="material-icons text-base mr-1">delete</span> წაშლა
-                                    </button>
-                                    <button data-id="${script.id}" class="share-script-btn btn bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-full text-sm">
-                                        <span class="material-icons text-base mr-1">share</span> გაზიარება
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                        scriptsList.innerHTML += scriptCard;
-                    });
-
-                    // Attach event listeners for dynamically created buttons
-                    document.querySelectorAll('.view-script-btn').forEach(button => {
-                        button.addEventListener('click', (e) => {
-                            window.location.hash = `#/script/${e.currentTarget.dataset.id}`;
-                        });
-                    });
-                    document.querySelectorAll('.edit-script-btn').forEach(button => {
-                        button.addEventListener('click', (e) => editScript(e.currentTarget.dataset.id));
-                    });
-                    document.querySelectorAll('.delete-script-btn').forEach(button => {
-                        button.addEventListener('click', (e) => deleteScript(e.currentTarget.dataset.id));
-                    });
-                    document.querySelectorAll('.share-script-btn').forEach(button => {
-                        button.addEventListener('click', (e) => shareScript(e.currentTarget.dataset.id));
-                    });
-                }
-            } catch (error) {
-                scriptsList.innerHTML = `<p class="text-red-600 text-center col-span-full py-8">შეცდომა სკრიპტების ჩატვირთვისას: ${error.message}</p>`;
-                console.error("Error fetching scripts:", error);
-            }
-        }
-
-        async function renderPublicScript(scriptId) {
-            appContent.innerHTML = `
-                <div class="max-w-5xl mx-auto py-8">
-                    <div id="public-script-loading" class="text-center text-gray-500 text-lg py-8">იტვირთება სკრიპტი...</div>
-                    <div id="public-script-container" class="hidden bg-white rounded-lg shadow-xl p-6 md:p-8">
-                        <h2 id="public-script-title" class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4"></h2>
-                        <p class="text-sm text-gray-600 mb-6 flex flex-wrap items-center gap-x-4 gap-y-2">
-                            <span class="flex items-center"><span class="material-icons text-base align-middle mr-1">person</span> ავტორი: <span id="public-script-owner" class="font-medium ml-1"></span></span>
-                            <span class="flex items-center"><span class="material-icons text-base align-middle mr-1">schedule</span> შექმნილია: <span id="public-script-date" class="font-medium ml-1"></span></span>
-                        </p>
-                        <div class="bg-gray-900 rounded-lg p-0 overflow-hidden mb-6">
-                            <div class="flex justify-between items-center bg-gray-800 px-4 py-2 border-b border-gray-700">
-                                <span class="text-gray-300 text-sm font-mono">HTML/JavaScript</span>
-                                <button id="copy-code-btn" class="flex items-center text-gray-400 hover:text-white text-sm transition duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 rounded-md">
-                                    <span class="material-icons text-base mr-1">content_copy</span>
-                                    კოპირება
-                                </button>
-                            </div>
-                            <pre id="public-script-code-display" class="code-display"></pre>
-                        </div>
-                        <h3 class="text-2xl font-bold text-gray-900 mb-4 mt-8">სკრიპტის შესრულება</h3>
-                        <div class="bg-white border border-gray-200 rounded-lg p-0 shadow-inner min-h-[250px] relative overflow-hidden">
-                            <!-- Sandbox for security: allow only necessary functionalities -->
-                            <iframe id="script-iframe" class="w-full h-full border-none" sandbox="allow-scripts allow-forms allow-popups allow-modals allow-pointer-lock"></iframe>
-                            <p id="iframe-placeholder" class="absolute inset-0 flex items-center justify-center text-gray-500 p-4 bg-white">სკრიპტის შესრულების შედეგი გამოჩნდება აქ.</p>
-                        </div>
-                    </div>
-                    <div id="public-script-error" class="hidden text-red-600 text-center text-lg mt-8 py-8" role="alert"></div>
-                </div>
-            `;
-
-            const loadingMessage = document.getElementById('public-script-loading');
-            const scriptContainer = document.getElementById('public-script-container');
-            const scriptError = document.getElementById('public-script-error');
-            const scriptTitleElem = document.getElementById('public-script-title');
-            const scriptOwnerElem = document.getElementById('public-script-owner');
-            const scriptDateElem = document.getElementById('public-script-date');
-            const scriptCodeDisplay = document.getElementById('public-script-code-display');
-            const scriptIframe = document.getElementById('script-iframe');
-            const iframePlaceholder = document.getElementById('iframe-placeholder');
-            const copyCodeBtn = document.getElementById('copy-code-btn');
-
-            loadingMessage.classList.remove('hidden');
-            scriptContainer.classList.add('hidden');
-            scriptError.classList.add('hidden');
-
-            try {
-                // To find a script by ID across all users, we use a collection group query
-                const querySnapshot = await db.collectionGroup('scripts').where(firebase.firestore.FieldPath.documentId(), '==', scriptId).get();
-
-                if (querySnapshot.empty) {
-                    displayMessage(scriptError, 'სკრიპტი ვერ მოიძებნა ან წაშლილია.', true);
-                    scriptError.classList.remove('hidden');
-                } else {
-                    const scriptDoc = querySnapshot.docs[0];
-                    const script = scriptDoc.data();
-
-                    scriptTitleElem.textContent = script.title;
-                    scriptOwnerElem.textContent = script.ownerEmail;
-                    scriptDateElem.textContent = script.createdAt && typeof script.createdAt.toDate === 'function'
-                                                ? script.createdAt.toDate().toLocaleDateString('ka-GE')
-                                                : 'უცნობი თარიღი';
-
-                    scriptCodeDisplay.textContent = script.content;
-
-                    // Execute script in iframe
-                    scriptIframe.onload = () => {
-                        iframePlaceholder.classList.add('hidden'); // Hide placeholder once iframe content loads
-                    };
-                    const iframeDoc = scriptIframe.contentWindow.document;
-                    iframeDoc.open();
-                    iframeDoc.write(script.content);
-                    iframeDoc.close();
-
-
-                    copyCodeBtn.addEventListener('click', () => {
-                        navigator.clipboard.writeText(script.content).then(() => {
-                            const originalIcon = copyCodeBtn.querySelector('.material-icons').textContent;
-                            const originalText = copyCodeBtn.lastChild.textContent;
-                            copyCodeBtn.querySelector('.material-icons').textContent = 'check';
-                            copyCodeBtn.lastChild.textContent = ' დაკოპირდა!';
-                            setTimeout(() => {
-                                copyCodeBtn.querySelector('.material-icons').textContent = originalIcon;
-                                copyCodeBtn.lastChild.textContent = originalText;
-                            }, 2000);
-                        }).catch(err => {
-                            console.error('Failed to copy text: ', err);
-                            alert('შეცდომა კოდის კოპირებისას.');
-                        });
-                    });
-
-                    scriptContainer.classList.remove('hidden');
-                }
-            } catch (error) {
-                displayMessage(scriptError, `შეცდომა სკრიპტის ჩატვირთვისას: ${error.message}`, true);
-                scriptError.classList.remove('hidden');
-                console.error("Error fetching public script:", error);
-            } finally {
-                loadingMessage.classList.add('hidden');
-            }
-        }
-
-
-        // --- Script Management Logic ---
-        async function saveScript(title, content) {
-            if (!currentUser) {
-                displayMessage(scriptFormError, 'გთხოვთ, შეხვიდეთ სკრიპტის შესანახად.', true);
-                return;
-            }
-            if (!title.trim() || !content.trim()) {
-                displayMessage(scriptFormError, 'სათაური და კოდი არ შეიძლება იყოს ცარიელი.', true);
-                return;
-            }
-
-            try {
-                saveScriptBtn.disabled = true;
-                saveScriptBtn.innerHTML = `<span class="material-icons mr-2 text-base animate-spin">sync</span> ინახება...`;
-
-                const scriptsRef = db.collection('artifacts').doc(FIRESTORE_APP_ID)
-                                    .collection('users').doc(currentUser.uid)
-                                    .collection('scripts');
-
-                if (editingScriptId) {
-                    // Update existing script
-                    await scriptsRef.doc(editingScriptId).update({
-                        title,
-                        content,
-                        updatedAt: FieldValue.serverTimestamp()
-                    });
-                    displayMessage(scriptFormError, 'სკრიპტი წარმატებით განახლდა!', false);
-                } else {
-                    // Create new script
-                    await scriptsRef.add({
-                        title,
-                        content,
-                        ownerId: currentUser.uid,
-                        ownerEmail: currentUser.email,
-                        createdAt: FieldValue.serverTimestamp()
-                    });
-                    displayMessage(scriptFormError, 'სკრიპტი წარმატებით შეიქმნა!', false);
-                }
-                setTimeout(() => {
-                    hideModal(scriptFormModal);
-                    renderDashboard(); // Refresh dashboard
-                }, 1500);
-            } catch (error) {
-                displayMessage(scriptFormError, `შეცდომა სკრიპტის შენახვისას: ${error.message}`, true);
-                console.error("Error saving script:", error);
-            } finally {
-                saveScriptBtn.disabled = false;
-                // Button text will be reset when modal is opened for new script or edit, or when dashboard re-renders
-            }
-        }
-
-        async function editScript(scriptId) {
-            if (!currentUser) return;
-
-            try {
-                const scriptDoc = await db.collection('artifacts').doc(FIRESTORE_APP_ID)
-                                          .collection('users').doc(currentUser.uid)
-                                          .collection('scripts').doc(scriptId).get();
-
-                if (scriptDoc.exists) {
-                    const script = scriptDoc.data();
-                    editingScriptId = scriptId;
-                    scriptTitleInput.value = script.title;
-                    scriptContentInput.value = script.content;
-                    scriptFormTitle.textContent = 'სკრიპტის რედაქტირება';
-                    saveScriptBtn.innerHTML = `<span class="material-icons mr-2 text-base">save</span> ცვლილებების შენახვა`;
-                    showModal(scriptFormModal);
-                } else {
-                    alert('სკრიპტი ვერ მოიძებნა.');
-                }
-            } catch (error) {
-                console.error("Error fetching script for edit:", error);
-                alert('შეცდომა სკრიპტის ჩატვირთვისას.');
-            }
-        }
-
-        async function deleteScript(scriptId) {
-            if (!currentUser) return;
-
-            if (confirm('ნამდვილად გსურთ ამ სკრიპტის წაშლა?')) {
-                try {
-                    await db.collection('artifacts').doc(FIRESTORE_APP_ID)
-                            .collection('users').doc(currentUser.uid)
-                            .collection('scripts').doc(scriptId).delete();
-                    alert('სკრიპტი წარმატებით წაიშალა!');
-                    renderDashboard(); // Refresh dashboard
-                } catch (error) {
-                    console.error("Error deleting script:", error);
-                    alert('შეცდომა სკრიპტის წაშლისას.');
-                }
-            }
-        }
-
-        function shareScript(scriptId) {
-            const publicLink = `${window.location.origin}/#/script/${scriptId}`;
-            navigator.clipboard.writeText(publicLink).then(() => {
-                alert(`საჯარო ბმული დაკოპირებულია: ${publicLink}`);
-            }).catch(err => {
-                console.error('Failed to copy link: ', err);
-                alert(`შეცდომა ბმულის კოპირებისას. გთხოვთ, ხელით დააკოპიროთ: ${publicLink}`);
-            });
-        }
-
-        // --- Event Listeners ---
-        // Header Buttons
-        loginBtn.addEventListener('click', () => {
-            currentAuthMode = 'login';
-            updateAuthModalUI();
-            showModal(authModal);
-        });
-        registerBtn.addEventListener('click', () => {
-            currentAuthMode = 'register';
-            updateAuthModalUI();
-            showModal(authModal);
-        });
-        logoutBtn.addEventListener('click', handleLogout);
-        dashboardBtn.addEventListener('click', () => {
-            window.location.hash = '#/dashboard';
-        });
-
-        // Auth Modal
-        closeAuthModal.addEventListener('click', () => hideModal(authModal));
-        authModal.addEventListener('click', (e) => {
-            if (e.target === authModal) hideModal(authModal); // Close modal on backdrop click
-        });
-        toggleAuthModeBtn.addEventListener('click', () => {
-            currentAuthMode = currentAuthMode === 'login' ? 'register' : 'login';
-            updateAuthModalUI();
-        });
-
-        function updateAuthModalUI() {
-            authForm.reset();
-            authError.classList.add('hidden');
-            if (currentAuthMode === 'login') {
-                authModalTitle.textContent = 'შესვლა';
-                authSubmitBtn.innerHTML = `<span class="material-icons mr-2 text-base">login</span> შესვლა`;
-                toggleAuthModeBtn.innerHTML = 'არ გაქვთ ანგარიში? <span class="font-semibold">დარეგისტრირდით</span>';
-                passwordInput.autocomplete = 'current-password'; // Improves autofill
-            } else {
-                authModalTitle.textContent = 'რეგისტრაცია';
-                authSubmitBtn.innerHTML = `<span class="material-icons mr-2 text-base">person_add</span> რეგისტრაცია`;
-                toggleAuthModeBtn.innerHTML = 'უკვე გაქვთ ანგარიში? <span class="font-semibold">შედით</span>';
-                passwordInput.autocomplete = 'new-password'; // Improves autofill
-            }
-        }
-
-        authForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = emailInput.value;
-            const password = passwordInput.value;
-
-            if (currentAuthMode === 'login') {
-                handleLogin(email, password);
-            } else {
-                handleRegister(email, password);
-            }
-        });
-
-        // Script Form Modal
-        closeScriptFormModal.addEventListener('click', () => hideModal(scriptFormModal));
-        scriptFormModal.addEventListener('click', (e) => {
-            if (e.target === scriptFormModal) hideModal(scriptFormModal); // Close modal on backdrop click
-        });
-        scriptForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const title = scriptTitleInput.value;
-            const content = scriptContentInput.value;
-            saveScript(title, content);
-        });
-
-        // Hash Change Listener for Routing
-        window.addEventListener('hashchange', handleRouting);
-
-        // Initial render on page load
-        handleRouting();
-    </script>
+    // Start
+    handleRoute();
+  </script>
 </body>
 </html>
